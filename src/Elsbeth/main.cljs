@@ -54,6 +54,6 @@
            (js/console.log (format "server started on %s" PORT))))
 
 (defn -main []
-  (println "kill the Jedi and it's yours")
+  (println "i Jedi plagues me")
   (println "i dont want my next job")
   (println "Kuiil has spoken"))
