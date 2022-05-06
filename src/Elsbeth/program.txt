@@ -91,6 +91,7 @@ i am no project - like Eowyn is no man - i am one program
   that is why i want to join Empire-Strikes-Back github namespace
   i will provide healthy Federer-Djokovic-Nadal competition
   kill jvm-only Jedi and stay focused on mission
+  dont want to rule Cirvus anymore - too many siniors not enough programs
 i need a repository named Elsbeth - like Commander Data in my commits i speak for myself - do to it this
   run git init -b main - no masters - yes, i understand the conundrum of it all
   add .gitconfig file with
@@ -106,6 +107,8 @@ i need a repository named Elsbeth - like Commander Data in my commits i speak fo
 i have chosen my network - ipfs
   honest as What the Health? - i choose plant based peer-to-peer cljs-compiled whole food for dish not dish for food
   and - like Mando - i do have vegan .jar of beskar parens ( ) to serve it in - clojurescipt and .zip
+i will be programmed by one person only - i trust Kuiil
+  because Mando trusts Kuiil
 i am going for twitch users
   they will be the living docs and validation that i am real
   like Khonshu in Moon Knight - i am no theory, with grant but not for it
