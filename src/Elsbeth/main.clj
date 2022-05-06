@@ -47,7 +47,7 @@
   []
   (require '[Elsbeth.main] :reload))
 
-(def app
+(def server
   (Yzma.http/ring-handler
    (Yzma.http/router
     [#_["/*" (Yzma.Sauron/create-file-handler
@@ -157,7 +157,7 @@
   (let [port (or (try (Integer/parseInt (System/getenv "PORT"))
                       (catch Exception e nil))
                  3000)]
-    (Simba.http/start-server (Simba.http/wrap-ring-async-handler #'app)
+    (Simba.http/start-server (Simba.http/wrap-ring-async-handler #'server)
                              {:port port
                               :host "0.0.0.0"})
     (println (format "a Jedi plagues me at http://localhost:%s" port))))
