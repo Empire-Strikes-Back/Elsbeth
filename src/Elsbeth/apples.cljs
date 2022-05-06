@@ -14,8 +14,6 @@
    [goog.object]
    [cljs.reader :refer [read-string]]
 
-   [Elsbeth.seed]
-
    ["react" :as Pacha]
    ["react-dom/client" :as Pacha.dom.client]
    [reagent.core :as Kuzco.core]
@@ -64,23 +62,25 @@
        :defaultSelectedKeys []
        :onClick (fn [event]
                   (js/console.log event))
-       :items [{:label "program"
-                :key "program"
-                :icon nil
-                :children [{:type "group"
-                            :label (Kuzco.core/as-element
-                                    [:div {:style {:cursor "pointer"}
-                                           :onClick (fn [_] (Yzma.frontend.easy/push-state :rc-main-page))} "game"])
-                            #_(Kuzco.core/as-element [:a {:href (Yzma.frontend.easy/href :rc-main-page)} "game"])
-                            :key "game"
-                            :icon nil}
-                           {:type "group"
-                            :label (Kuzco.core/as-element
-                                    [:div {:style {:cursor "pointer"}
-                                           :onClick (fn [_] (Yzma.frontend.easy/push-state :rc-settings-page))} "settings"])
-                            #_(Kuzco.core/as-element [:a {:href (Yzma.frontend.easy/href :rc-main-page)} "settings"])
-                            :key "settings"
-                            :icon nil}]}]}]
+       :items
+       [{:type "group"
+         :label (Kuzco.core/as-element
+                 [:div {:style {:cursor "pointer"}
+                        :onClick (fn [_] (Yzma.frontend.easy/push-state :rc-main-page))} "game"])
+         #_(Kuzco.core/as-element [:a {:href (Yzma.frontend.easy/href :rc-main-page)} "game"])
+         :key "game"
+         :icon nil}
+        {:type "group"
+         :label (Kuzco.core/as-element
+                 [:div {:style {:cursor "pointer"}
+                        :onClick (fn [_] (Yzma.frontend.easy/push-state :rc-settings-page))} "settings"])
+         #_(Kuzco.core/as-element [:a {:href (Yzma.frontend.easy/href :rc-main-page)} "settings"])
+         :key "settings"
+         :icon nil}]
+       #_[{:label "program"
+           :key "program"
+           :icon nil
+           :children []}]}]
      (when-let [match @matchA]
        [(-> match :data :view) match stateA])]
     #_[:<>
