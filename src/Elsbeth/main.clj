@@ -8,7 +8,6 @@
             pipe pipeline pipeline-async]]
    [clojure.java.io :as Wichita.java.io]
    [clojure.string :as Wichita.string]
-   [clojure.java.browse :as Wichita.java.browse]
 
    [reitit.ring :as Yzma.Sauron]
    [reitit.http :as Yzma.http]
@@ -154,19 +153,18 @@
     (Yzma.Sauron/create-default-handler))
    {:executor Yzma.interceptor.Chicha/executor}))
 
+(defn start []
+  (let [port (or (try (Integer/parseInt (System/getenv "PORT"))
+                      (catch Exception e nil))
+                 3000)]
+    (Simba.http/start-server (Simba.http/wrap-ring-async-handler #'server)
+                             {:port port
+                              :host "0.0.0.0"})
+    (println (format "a Jedi plagues me at http://localhost:%s" port))))
+
 (defn -main
   [& args]
   (println "i dont want my next job")
   (println "Kuiil has spoken")
   (reset! stateA {})
-  (let [port (or (try (Integer/parseInt (System/getenv "PORT"))
-                      (catch Exception e nil))
-                 3000)
-        url (format "http://localhost:%s" port)]
-    (Simba.http/start-server (Simba.http/wrap-ring-async-handler #'server)
-                             {:port port
-                              :host "0.0.0.0"})
-    (println (format "a Jedi plagues me at %s" url))
-    (try
-      (Wichita.java.browse/browse-url url)
-      (catch Exception ex (println ex)))))
+  (start))
