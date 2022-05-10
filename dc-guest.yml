@@ -1,0 +1,29 @@
+version: "3.9"
+
+volumes:
+   ipfs:
+
+services:
+
+  Diana:
+    image: elsbeth/diana
+    build:
+      context: ./Elsbeth/Diana
+    ports:
+      - 3322:8080
+    depends_on:
+      - Sarah-Connor
+
+  Inosanto:
+    image: elsbeth/inosanto
+    build:
+      context: ./Elsbeth/Inosanto
+    ports:
+      - 3323:80
+
+  Sarah-Connor:
+    image: elsbeth/sarah-connor
+    build:
+      context: ./Elsbeth/Sarah-Connor
+    volumes:
+      - ipfs:/data/ipfs

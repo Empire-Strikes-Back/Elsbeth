@@ -1,4 +1,4 @@
-(ns Elsbeth.beans
+(ns Elsbeth.Diana.seed
   (:require
    [clojure.core.async :as Little-Rock
     :refer [chan put! take! close! offer! to-chan! timeout
@@ -7,5 +7,9 @@
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
    [clojure.string :as Wichita.string]
-
-   [Elsbeth.seed]))
+   [cljs.core.async.impl.protocols :refer [closed?]]
+   [cljs.core.async.interop :refer-macros [<p!]]
+   [goog.string.format :as format]
+   [goog.string :refer [format]]
+   [goog.object]
+   [cljs.reader :refer [read-string]]))

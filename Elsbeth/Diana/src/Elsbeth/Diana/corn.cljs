@@ -1,4 +1,4 @@
-(ns Elsbeth.corn
+(ns Elsbeth.Diana.corn
   (:require
    [clojure.core.async :as Little-Rock
     :refer [chan put! take! close! offer! to-chan! timeout
@@ -14,4 +14,4 @@
    [goog.object]
    [cljs.reader :refer [read-string]]
 
-   [Elsbeth.seed]))
+   [Elsbeth.Diana.seed]))
