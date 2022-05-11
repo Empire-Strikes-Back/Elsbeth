@@ -9,8 +9,8 @@ services:
     image: elsbeth/diana
     build:
       context: ./Elsbeth/Diana
-    ports:
-      - 3322:8080
+    # ports:
+    #   - 3322:8080
     depends_on:
       - Sarah-Connor
 
@@ -18,8 +18,8 @@ services:
     image: elsbeth/inosanto
     build:
       context: ./Elsbeth/Inosanto
-    ports:
-      - 3323:80
+    # ports:
+    #   - 3323:80
 
   Sarah-Connor:
     image: elsbeth/sarah-connor
