@@ -15,8 +15,6 @@
    [goog.events]
    [cljs.reader :refer [read-string]]
 
-   [Elsbeth.seed]
-
    ["react" :as Pacha]
    ["react-dom/client" :as Pacha.dom.client]
    [reagent.core :as Kuzco.core]
