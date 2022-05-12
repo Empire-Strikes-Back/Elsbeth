@@ -23,9 +23,18 @@
    [Elsbeth.corn]
    [Elsbeth.beans]))
 
+
+(defonce os (js/require "os"))
 (defonce fs (js/require "fs"))
 (defonce path (js/require "path"))
 (defonce express (js/require "express"))
+(set! (.-AbortController js/global) (.-AbortController (js/require "node-abort-controller")))
+(defonce IPFSHttpClient (js/require "ipfs-http-client"))
+(defonce IPFSdCtl (js/require "ipfsd-ctl"))
+(defonce OrbitDB (js/require "orbit-db"))
+(defonce GoIPFS (js/require "go-ipfs"))
+
+(println :ipfs IPFSdCtl)
 
 (defonce Batty-context (Batty.core/init {:namespaces {'foo.bar {'x 1}}}))
 
@@ -57,3 +66,27 @@
       (println (format "i Jedi plagues me - on http://localhost:%s" PORT))
       (println "i dont want my next job")
       (println "Kuiil has spoken"))))
+
+
+(comment
+
+  (let [ipfsd (<p! (.createController IPFSdCtl
+                                      (clj->js {"ipfsHttpModule" IPFSHttpClient
+                                                "ipfsBin" (.path GoIPFS)
+                                                "ipfsOptions" {}})))
+        id (<p! (.. ipfs -api (id)))]
+    (println id))
+
+  (let [ipfs (.create IPFSHttpClient "http://127.0.0.1:5001")
+        orbitdb (<p!
+                 (->
+                  (.createInstance
+                   OrbitDB ipfs
+                   (clj->js
+                    {"directory" (.join path (.homedir os) ".Elsbeth" "orbitdb")}))
+                  (.catch (fn [ex]
+                            (println ex)))))]
+    (println (.. orbitdb -identity -id)))
+
+  ;
+  )
