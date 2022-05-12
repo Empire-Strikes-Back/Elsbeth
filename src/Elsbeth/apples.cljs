@@ -42,7 +42,7 @@
   [:> (.-Content ThemeSongGuyLayout)
    {:style {:background-color "white"}}
    [:> ThemeSongGuyRow
-    "a Jedi plagues me"]])
+    "kill the Jedi and it's yours"]])
 
 (defn rc-game-page
   [match stateA]

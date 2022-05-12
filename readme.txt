@@ -1,1 +1,1 @@
-kill the Jedi and it's yours
+a Jedi plagues me
