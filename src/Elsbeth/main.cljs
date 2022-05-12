@@ -49,11 +49,11 @@
 (.get server "*" (fn [request response]
                    (.sendFile response (.join path js/__dirname  "ui" "index.html"))))
 
-(.listen server 3000
-         (fn []
-           (js/console.log (format "server started on %s" PORT))))
-
 (defn -main []
-  (println "i Jedi plagues me")
-  (println "i dont want my next job")
-  (println "Kuiil has spoken"))
+  (go
+    (let [complete| (chan 1)]
+      (.listen server PORT (fn [] (put! complete| true)))
+      (<! complete|)
+      (println (format "i Jedi plagues me - on http://localhost:%s" PORT))
+      (println "i dont want my next job")
+      (println "Kuiil has spoken"))))
