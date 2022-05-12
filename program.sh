@@ -4,7 +4,7 @@
 repl(){
   clj \
     -J-Dclojure.core.async.pool-size=1 \
-    -X:repl Ripley.core/process \
+    -X:Ripley Ripley.core/process \
     :main-ns Elsbeth.main
 }
 
@@ -41,17 +41,11 @@ tag(){
 
 jar(){
 
-  clojure \
-    -X:identicon Zazu.core/process \
-    :word '"Elsbeth"' \
-    :filename '"out/identicon/icon.png"' \
-    :size 256
-
   rm -rf out/*.jar
   COMMIT_HASH=$(git rev-parse --short HEAD)
   COMMIT_COUNT=$(git rev-list --count HEAD)
   clojure \
-    -X:uberjar Genie.core/process \
+    -X:Genie Genie.core/process \
     :main-ns Elsbeth.main \
     :filename "\"out/Elsbeth-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
     :paths '["src" "out/ui"]'
