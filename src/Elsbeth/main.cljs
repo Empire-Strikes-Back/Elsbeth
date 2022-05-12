@@ -1,4 +1,4 @@
-(ns Elsbeth.Diana.main
+(ns Elsbeth.main
   (:require
    [clojure.core.async :as Little-Rock
     :refer [chan put! take! close! offer! to-chan! timeout
@@ -16,11 +16,12 @@
 
    [sci.core :as Batty.core]
    
-   [Elsbeth.Diana.seed]
-   [Elsbeth.Diana.salt]
-   [Elsbeth.Diana.microwaved-beets]
-   [Elsbeth.Diana.corn]
-   [Elsbeth.Diana.beans]))
+   [Elsbeth.drawing]
+   [Elsbeth.seed]
+   [Elsbeth.raisins]
+   [Elsbeth.microwaved-beets]
+   [Elsbeth.corn]
+   [Elsbeth.beans]))
 
 (defonce fs (js/require "fs"))
 (defonce path (js/require "path"))
@@ -28,7 +29,7 @@
 
 (defonce Batty-context (Batty.core/init {:namespaces {'foo.bar {'x 1}}}))
 
-(defonce ^:const PORT 8080)
+(defonce ^:const PORT 3000)
 (def server (express))
 (def api (express.Router.))
 
@@ -45,10 +46,10 @@
 (.use server (.static express "ui"))
 (.use server "/api" api)
 
-#_(.get server "*" (fn [request response]
+(.get server "*" (fn [request response]
                    (.sendFile response (.join path js/__dirname  "ui" "index.html"))))
 
-(.listen server PORT
+(.listen server 3000
          (fn []
            (js/console.log (format "server started on %s" PORT))))
 

@@ -1,4 +1,4 @@
-(ns Elsbeth.Diana.salt
+(ns Elsbeth.raisins
   (:require
    [clojure.core.async :as Little-Rock
     :refer [chan put! take! close! offer! to-chan! timeout

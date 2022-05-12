@@ -1,4 +1,4 @@
-(ns Elsbeth.Diana.microwaved-beets
+(ns Elsbeth.drawing
   (:require
    [clojure.core.async :as Little-Rock
     :refer [chan put! take! close! offer! to-chan! timeout
@@ -12,6 +12,4 @@
    [goog.string.format :as format]
    [goog.string :refer [format]]
    [goog.object]
-   [cljs.reader :refer [read-string]]
-
-   [Elsbeth.Diana.seed]))
+   [cljs.reader :refer [read-string]]))

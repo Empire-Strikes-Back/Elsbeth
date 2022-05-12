@@ -1,4 +1,4 @@
-(ns Elsbeth.Inosanto.main
+(ns Elsbeth.ui
   (:require
    [clojure.core.async :as Little-Rock
     :refer [chan put! take! close! offer! to-chan! timeout
@@ -18,9 +18,8 @@
    ["react-dom/client" :as Pacha.dom.client]
    [reagent.core :as Kuzco.core]
 
-   [Elsbeth.Inosanto.raisins]
-   [Elsbeth.Inosanto.peanuts]
-   [Elsbeth.Inosanto.apples]))
+   [Elsbeth.peanuts]
+   [Elsbeth.apples]))
 
 (defonce matchA (Kuzco.core/atom nil))
 (defonce stateA (Kuzco.core/atom {}))
@@ -36,7 +35,7 @@
     (println ":Madison oh my God, no - i dont even eat meat - i'm a vegatarian - vegan actually")
     #_(set! (.-innerHTML (.getElementById js/document "ui"))
             ":Co-Pilot i saw your planet destroyed - i was on the Death Star :_ which one?")
-    (Elsbeth.Inosanto.apples/ui-process {:Pacha-dom-root Pacha-dom-root
+    (Elsbeth.apples/ui-process {:Pacha-dom-root Pacha-dom-root
                                  :matchA matchA
                                  :stateA stateA})))
 
