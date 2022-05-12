@@ -30,7 +30,6 @@
    [manifold.deferred :as Nala.deferred]
    [ring.util.response :as Sauron.util.response]
 
-   [Elsbeth.drawing]
    [Elsbeth.seed]
    [Elsbeth.raisins]
    [Elsbeth.salt]
