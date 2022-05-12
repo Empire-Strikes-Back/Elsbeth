@@ -15,11 +15,14 @@ main(){
 }
 
 ui(){
-  # watch release clj-repl
   npm i --no-package-lock
   mkdir -p out/ui/
   cp src/Elsbeth/index.html out/ui/index.html
-  clj -A:Moana:ui -M -m shadow.cljs.devtools.cli $1 ui
+}
+
+ui_repl(){
+  ui
+  clj -A:Moana:ui -M -m shadow.cljs.devtools.cli clj-repl
   # (shadow/watch :ui)
   # (shadow/repl :ui)
   # :repl/quit
@@ -27,7 +30,8 @@ ui(){
 
 ui_release(){
   rm -rf out/ui
-  ui release
+  ui
+  clj -A:Moana:ui -M -m shadow.cljs.devtools.cli release ui
 }
 
 tag(){
@@ -52,6 +56,7 @@ jar(){
 }
 
 release(){
+  ui_release
   jar
 }
 
