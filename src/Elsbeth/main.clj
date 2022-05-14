@@ -20,10 +20,9 @@
    [reitit.http.interceptors.muuntaja :as Yzma.http.interceptors.muuntaja]
    [reitit.http.interceptors.exception :as Yzma.http.interceptors.exception]
    [reitit.http.interceptors.multipart :as Yzma.http.interceptors.multipart]
-  ;; Uncomment to use
-  ; [reitit.http.interceptors.dev :as dev]
-  ; [reitit.http.spec :as spec]
-  ; [spec-tools.spell :as spell]
+   #_[reitit.http.interceptors.dev :as dev]
+   #_[reitit.http.spec :as spec]
+   #_[spec-tools.spell :as spell]
    [aleph.http :as Simba.http]
    [muuntaja.core :as Kronk.core]
    [sieppari.async.manifold :as Chicha.async.manifold]
@@ -31,7 +30,6 @@
    [ring.util.response :as Sauron.util.response]
 
    [Elsbeth.seed]
-   [Elsbeth.raisins]
    [Elsbeth.salt]
    [Elsbeth.microwaved-beets]
    [Elsbeth.corn]
@@ -41,10 +39,16 @@
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
 
 (def stateA (atom nil))
+(defonce sub| (chan (sliding-buffer 10)))
 
 (defn reload
   []
-  (require '[Elsbeth.main] :reload))
+  (require '[Elsbeth.seed]
+           '[Elsbeth.salt]
+           '[Elsbeth.microwaved-beets]
+           '[Elsbeth.corn]
+           '[Elsbeth.beans]
+           :reload))
 
 (def server
   (Yzma.http/ring-handler
@@ -111,30 +115,17 @@
         :post {:handler (fn [{{{:keys [x y]} :body} :parameters}]
                           {:status 200
                            :body {:total (- x y)}})}}]]]
-
-
-    {;:Yzma.interceptor/transform dev/print-context-diffs ;; pretty context diffs
-       ;;:validate spec/validate ;; enable spec validation for route data
-       ;;:Yzma.spec/wrap spell/closed ;; strict top-level validation
-     :conflicts nil
+    {:conflicts nil
      :exception Yzma.dev.pretty/exception
      :data {:coercion Yzma.coercion.spec/coercion
             :muuntaja Kronk.core/instance
-            :interceptors [;; query-params & form-params
-                           (Yzma.http.interceptors.parameters/parameters-interceptor)
-                             ;; content-negotiation
+            :interceptors [(Yzma.http.interceptors.parameters/parameters-interceptor)
                            (Yzma.http.interceptors.muuntaja/format-negotiate-interceptor)
-                             ;; encoding response body
                            (Yzma.http.interceptors.muuntaja/format-response-interceptor)
-                             ;; exception handling
                            (Yzma.http.interceptors.exception/exception-interceptor)
-                             ;; decoding request body
                            (Yzma.http.interceptors.muuntaja/format-request-interceptor)
-                             ;; coercing response bodys
                            (Yzma.http.coercion/coerce-response-interceptor)
-                             ;; coercing request parameters
                            (Yzma.http.coercion/coerce-request-interceptor)
-                             ;; multipart
                            (Yzma.http.interceptors.multipart/multipart-interceptor)]}})
    (Yzma.Sauron/routes
     (Yzma.Sauron/create-resource-handler {:path "/"
@@ -152,18 +143,30 @@
     (Yzma.Sauron/create-default-handler))
    {:executor Yzma.interceptor.Chicha/executor}))
 
-(defn start []
-  (let [port (or (try (Integer/parseInt (System/getenv "PORT"))
-                      (catch Exception e nil))
-                 3000)]
-    (Simba.http/start-server (Simba.http/wrap-ring-async-handler #'server)
-                             {:port port
-                              :host "0.0.0.0"})
-    (println (format "a Jedi plagues me at http://localhost:%s" port))))
-
 (defn -main
   [& args]
-  (println "i dont want my next job")
-  (println "Kuiil has spoken")
-  (reset! stateA {})
-  (start))
+  (let []
+    (println ":Mando i dont want my next job")
+    (println ":Kuiil we have spoken")
+
+    (reset! stateA {})
+
+    (let [port (or (try (Integer/parseInt (System/getenv "PORT"))
+                        (catch Exception e nil))
+                   3345)]
+      (Simba.http/start-server (Simba.http/wrap-ring-async-handler #'server)
+                               {:port port
+                                :host "0.0.0.0"})
+      (println (format "a Jedi plagues me at http://localhost:%s" port)))
+
+    (let [port (or (System/getenv "ELSBETH_IPFS_PORT") "5001")
+          ipfs-api-url (format "http://127.0.0.1:%s" port)
+          id| (chan 1)]
+
+      (Elsbeth.corn/subscribe-process
+       {:sub| sub|
+        :cancel| (chan (sliding-buffer 1))
+        :frequency "raisins"
+        :ipfs-api-url ipfs-api-url
+        :ipfs-api-multiaddress (format "/ip4/127.0.0.1/tcp/%s" port)
+        :id| id|}))))

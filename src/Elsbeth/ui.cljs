@@ -19,7 +19,8 @@
    [reagent.core :as Kuzco.core]
 
    [Elsbeth.peanuts]
-   [Elsbeth.apples]))
+   [Elsbeth.apples]
+   [Elsbeth.raisins]))
 
 (defonce matchA (Kuzco.core/atom nil))
 (defonce stateA (Kuzco.core/atom {}))
@@ -36,8 +37,8 @@
     #_(set! (.-innerHTML (.getElementById js/document "ui"))
             ":Co-Pilot i saw your planet destroyed - i was on the Death Star :_ which one?")
     (Elsbeth.apples/ui-process {:Pacha-dom-root Pacha-dom-root
-                                 :matchA matchA
-                                 :stateA stateA})))
+                                :matchA matchA
+                                :stateA stateA})))
 
 (defn reload
   []
