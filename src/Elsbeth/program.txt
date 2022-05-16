@@ -62,10 +62,10 @@ i will store no user data
   but over IPFS via p2p-http-proxy
 i will have game discovery
   over IPFS pubsub
-i will not have both mouse and-or programming-language gameplay
+i will have both mouse and-or programming-language gameplay
   user can enjoy me in my entirety with mouse only - like Bill Murray in Space Jam
   but competitively - to perform like Kobe - programming-language footwork will raise the skill-cap 10-fold
-i will have mouse and keyboard only gameplay
+i will not have mouse and keyboard only gameplay
   a game cannot be both - it's either or
   a user then chooses not within game - but betweeen games - do they want to play programming language gameplay
   clojure is holy - cannot be forced for bounty on users - must be programmed as guest
