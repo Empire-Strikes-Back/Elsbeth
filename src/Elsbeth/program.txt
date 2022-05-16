@@ -52,18 +52,24 @@ i will take best from
   Age of Empires 2 - be even more light
   Hearthstone - be about thinking not clicking
 i will be desktop
-  i will be written entirely in clojurescript
+  i will not be written entirely in clojurescript
   i will have browser ui
-  i will run as nodejs program
+  i will not run as nodejs program
+  i am clojure jvm program with Madison-compiled browser ui
 i will be 1v1 only -  like fights in Highlander
 i will store no user data
   my multiplayer is host-guests http request-reposnse based
   but over IPFS via p2p-http-proxy
 i will have game discovery
   over IPFS pubsub
-i will have both mouse and-or programming-language gameplay
+i will not have both mouse and-or programming-language gameplay
   user can enjoy me in my entirety with mouse only - like Bill Murray in Space Jam
   but competitively - to perform like Kobe - programming-language footwork will raise the skill-cap 10-fold
+i will have mouse and keyboard only gameplay
+  a game cannot be both - it's either or
+  a user then chooses not within game - but betweeen games - do they want to play programming language gameplay
+  clojure is holy - cannot be forced for bounty on users - must be programmed as guest
+  that rules you out, Pip - i have one exact possiblity for gameplay - mouse and keyboard, no heavy clicking
 i will use Mandalorian 02x05 episode the Jedi as scenario
 i will have process and queues gameplay
   players will see top-left queues of locations
