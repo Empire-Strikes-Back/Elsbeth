@@ -14,6 +14,11 @@
    [goog.object]
    [cljs.reader :refer [read-string]]
 
+   [clojure.test.check.generators :as Pawny.generators]
+   [clojure.spec.alpha :as Wichita.spec]
+   
+   [reagent.core :as Kuzco.core]
+   ["konva/lib/shapes/Rect"]
    ["konva" :default Konva]
    ["react-konva" :as ReactKonva :rename {Stage KonvaStage
                                           Layer KonvaLayer
@@ -27,7 +32,46 @@
    ["@react-spring/web" :as ReactSpring :rename {animated ReactSpringAnimated
                                                  Spring ReactSpringSpring}]))
 
+
+(def ^:const box-size 32)
+(def ^:const rows 24)
+(def ^:const cols 32)
+
+(def colors
+  {:sands "#edd3af" #_"#D2B48Cff"
+   :Korvus "lightgrey"
+   :signal-tower "brown"
+   :recharge "#30ad23"
+   :Elsbeth "blue"})
+
+(defn rc-background-layer
+  []
+  (Kuzco.core/with-let
+    []
+    [:> (.-Layer ReactKonva)
+     {:id "background-layer"}
+     [:> (.-Rect ReactKonva) {:width (* box-size cols)
+                              :height (* box-size rows)
+                              :id "background-rect"
+                              :x 0
+                              :y 0
+                              :fill (:Korvus colors)
+                              :strokeWidth 0
+                              :stroke "white"}]]))
+
+(defn rc-game
+  [match stateA ops|]
+  (Kuzco.core/with-let
+    []
+    [:> (.-Stage ReactKonva)
+     {:width (* box-size cols)
+      :height (* box-size rows)}
+     [rc-background-layer]]))
+
 (defn canvas-process
   [{:keys []
     :as opts}]
-  (let []))
+  (let []
+    
+    
+    ))

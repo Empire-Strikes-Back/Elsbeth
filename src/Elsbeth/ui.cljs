@@ -24,6 +24,7 @@
 
 (defonce matchA (Kuzco.core/atom nil))
 (defonce stateA (Kuzco.core/atom {}))
+(defonce ops| (chan (sliding-buffer 10)))
 (defonce Pacha-dom-root (Pacha.dom.client/createRoot (.getElementById js/document "ui")))
 
 (defn -main
@@ -38,7 +39,8 @@
             ":Co-Pilot i saw your planet destroyed - i was on the Death Star :_ which one?")
     (Elsbeth.apples/ui-process {:Pacha-dom-root Pacha-dom-root
                                 :matchA matchA
-                                :stateA stateA})))
+                                :stateA stateA
+                                :ops| ops|})))
 
 (defn reload
   []

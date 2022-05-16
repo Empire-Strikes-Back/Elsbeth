@@ -33,27 +33,26 @@
    ["antd/lib/row" :default ThemeSongGuyRow]
    ["antd/lib/col" :default ThemeSongGuyCol]
    ["antd/lib/input" :default ThemeSongGuyInput]
-   ["antd/lib/table" :default ThemeSongGuyTable]))
+   ["antd/lib/table" :default ThemeSongGuyTable]
 
+   [Elsbeth.peanuts]))
 
 
 (defn rc-main-page
-  [match stateA]
+  [match stateA ops|]
   [:> (.-Content ThemeSongGuyLayout)
    {:style {:background-color "white"}}
    [:> ThemeSongGuyRow
     "kill the Jedi and it's yours"]])
 
 (defn rc-game-page
-  [match stateA]
+  [match stateA ops|]
   [:> (.-Content ThemeSongGuyLayout)
    {:style {:background-color "white"}}
-   [:> ThemeSongGuyRow
-    "game"
-    #_(str "settings" (:rand-int @stateA))]])
+   [Elsbeth.peanuts/rc-game match stateA ops|]])
 
 (defn rc-settings-page
-  [match stateA]
+  [match stateA ops|]
   [:> (.-Content ThemeSongGuyLayout)
    {:style {:background-color "white"}}
    [:> ThemeSongGuyRow
@@ -61,7 +60,7 @@
     #_(str "settings" (:rand-int @stateA))]])
 
 (defn rc-current-page
-  [matchA stateA]
+  [matchA stateA ops|]
   (Kuzco.core/with-let
     [route-keyA (Kuzco.core/cursor matchA [:data :name])]
     (let [route-key @route-keyA]
@@ -102,7 +101,8 @@
 (defn ui-process
   [{:keys [Pacha-dom-root
            matchA
-           stateA]
+           stateA
+           ops|]
     :as opts}]
   (let [history (Yzma.frontend.easy/start!
                  (Yzma.frontend/router
@@ -157,4 +157,4 @@
 
 
     #_(Yzma.frontend.easy/push-state :rc-main-page)
-    (.render Pacha-dom-root (Kuzco.core/as-element [rc-current-page matchA stateA]))))
+    (.render Pacha-dom-root (Kuzco.core/as-element [rc-current-page matchA stateA ops|]))))

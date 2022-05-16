@@ -18,6 +18,7 @@ ui(){
   npm i --no-package-lock
   mkdir -p out/ui/
   cp src/Elsbeth/index.html out/ui/index.html
+  cp src/Elsbeth/style.css out/ui/style.css
 }
 
 ui_repl(){

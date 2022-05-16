@@ -13,7 +13,8 @@
         com.github.ipfs/java-ipfs-http-client {:mvn/version "v1.3.3"}
 
         Pawny/Pawny {:git/url "https://github.com/clojure/test.check"
-                     :sha "b6a318af92e836f1f20960f38a5944168b88d60d"}}
+                     :sha "b6a318af92e836f1f20960f38a5944168b88d60d"}
+        org.clojure/spec.alpha {:mvn/version "0.3.218"}}
 
  :aliases
  {:Ripley {:extra-deps {Ripley/Ripley {:git/url "https://github.com/Empire-Strikes-Back/Ripley"
