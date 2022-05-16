@@ -55,7 +55,7 @@
                               :id "background-rect"
                               :x 0
                               :y 0
-                              :fill (:Korvus colors)
+                              :fill "#ffffff"
                               :strokeWidth 0
                               :stroke "white"}]]))
 
