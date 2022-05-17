@@ -35,7 +35,8 @@
    ["antd/lib/input" :default ThemeSongGuyInput]
    ["antd/lib/table" :default ThemeSongGuyTable]
 
-   [Elsbeth.peanuts]))
+   [Elsbeth.peanuts]
+   [Elsbeth.salt]))
 
 
 (defn rc-main-page
@@ -49,7 +50,13 @@
   [match stateA ops|]
   [:> (.-Content ThemeSongGuyLayout)
    {:style {:background-color "white"}}
-   [Elsbeth.peanuts/rc-game match stateA ops|]])
+   [:> ThemeSongGuyRow
+    [:> ThemeSongGuyCol
+     {:flex 1}
+     [Elsbeth.salt/rc-editor]]
+    [:> ThemeSongGuyCol
+     {:flex 1}
+     [Elsbeth.peanuts/rc-game match stateA ops|]]]])
 
 (defn rc-settings-page
   [match stateA ops|]

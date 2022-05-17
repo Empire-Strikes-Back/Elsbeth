@@ -34,8 +34,8 @@
 
 
 (def ^:const box-size 32)
-(def ^:const rows 24)
-(def ^:const cols 32)
+(def ^:const rows 16)
+(def ^:const cols 16)
 
 (def colors
   {:sands "#edd3af" #_"#D2B48Cff"

@@ -39,4 +39,9 @@
                     #_Yzma
                     metosin/reitit {:mvn/version "0.5.18"}
                     metosin/reitit-spec {:mvn/version "0.5.18"}
-                    metosin/reitit-frontend {:mvn/version "0.5.18"}}}}}
+                    metosin/reitit-frontend {:mvn/version "0.5.18"}
+
+                    Roxanne-Ritchi/Roxanne-Ritchi {:git/url "https://github.com/nextjournal/clojure-mode"
+                                                   :sha "699a445ebf2767f41fd0b6eeed5a008511702be6"}
+                    Batty/Batty {:git/url "https://github.com/borkdude/sci"
+                                 :sha "6c10e494371a37a56bef45c8148435888bae3a45"}}}}}

@@ -10,7 +10,6 @@
    [clojure.string :as Wichita.string]
 
    [Elsbeth.seed]
-   [Elsbeth.salt]
    [Elsbeth.microwaved-beets]
    [Elsbeth.corn]
    [Elsbeth.beans])
@@ -25,7 +24,6 @@
 (defn reload
   []
   (require '[Elsbeth.seed]
-           '[Elsbeth.salt]
            '[Elsbeth.microwaved-beets]
            '[Elsbeth.corn]
            '[Elsbeth.beans]

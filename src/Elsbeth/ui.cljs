@@ -18,9 +18,10 @@
    ["react-dom/client" :as Pacha.dom.client]
    [reagent.core :as Kuzco.core]
 
+   [Elsbeth.raisins]
    [Elsbeth.peanuts]
    [Elsbeth.apples]
-   [Elsbeth.raisins]))
+   [Elsbeth.salt]))
 
 (defonce matchA (Kuzco.core/atom nil))
 (defonce stateA (Kuzco.core/atom {}))
