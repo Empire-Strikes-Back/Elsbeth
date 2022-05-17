@@ -45,58 +45,58 @@
 
      #_["/ui/*" (Yzma.Sauron/create-resource-handler)]
 
-     ["/api"
+     #_["/api"
 
-      ["/upload"
-       {:post {:parameters {:multipart {:file Yzma.http.interceptors.multipart/temp-file-part}}
-               :handler (fn [{{{:keys [file]} :multipart} :parameters}]
-                          {:status 200
-                           :body {:name (:filename file)
-                                  :size (:size file)}})}}]
-
-      ["/download"
-       {:get {:handler (fn [_]
-                         {:status 200
-                          :headers {"Content-Type" "image/png"}
-                          :body (Wichita.java.io/input-stream
-                                 (Wichita.java.io/resource "Yzma.png"))})}}]
-
-
-      ["/async"
-       {:get {:handler (fn [{{{:keys [seed results]} :query} :parameters}]
-                         (Nala.deferred/chain
-                          (Simba.http/get
-                           "https://randomuser.me/api/"
-                           {:query-params {:seed seed, :results results}})
-                          :body
-                          (partial Kronk.core/decode "application/json")
-                          :results
-                          (fn [results]
+        ["/upload"
+         {:post {:parameters {:multipart {:file Yzma.http.interceptors.multipart/temp-file-part}}
+                 :handler (fn [{{{:keys [file]} :multipart} :parameters}]
                             {:status 200
-                             :body results})))}}]
+                             :body {:name (:filename file)
+                                    :size (:size file)}})}}]
 
-      ["/Little-Rock"
-       {:get {:handler (fn [{{{:keys []} :query} :parameters}]
-                         (go
-                           (<! (timeout 1000))
+        ["/download"
+         {:get {:handler (fn [_]
                            {:status 200
-                            :body "twelve is the new twony"}))}}]
+                            :headers {"Content-Type" "image/png"}
+                            :body (Wichita.java.io/input-stream
+                                   (Wichita.java.io/resource "Yzma.png"))})}}]
 
-      ["/plus"
-       {:get {:handler (fn [{{{:keys [x y]} :query} :parameters}]
-                         {:status 200
-                          :body {:total (+ x y)}})}
-        :post {:handler (fn [{{{:keys [x y]} :body} :parameters}]
-                          {:status 200
-                           :body {:total (+ x y)}})}}]
 
-      ["/minus"
-       {:get {:handler (fn [{{{:keys [x y]} :query} :parameters}]
-                         {:status 200
-                          :body {:total (- x y)}})}
-        :post {:handler (fn [{{{:keys [x y]} :body} :parameters}]
-                          {:status 200
-                           :body {:total (- x y)}})}}]]]
+        ["/async"
+         {:get {:handler (fn [{{{:keys [seed results]} :query} :parameters}]
+                           (Nala.deferred/chain
+                            (Simba.http/get
+                             "https://randomuser.me/api/"
+                             {:query-params {:seed seed, :results results}})
+                            :body
+                            (partial Kronk.core/decode "application/json")
+                            :results
+                            (fn [results]
+                              {:status 200
+                               :body results})))}}]
+
+        ["/Little-Rock"
+         {:get {:handler (fn [{{{:keys []} :query} :parameters}]
+                           (go
+                             (<! (timeout 1000))
+                             {:status 200
+                              :body "twelve is the new twony"}))}}]
+
+        ["/plus"
+         {:get {:handler (fn [{{{:keys [x y]} :query} :parameters}]
+                           {:status 200
+                            :body {:total (+ x y)}})}
+          :post {:handler (fn [{{{:keys [x y]} :body} :parameters}]
+                            {:status 200
+                             :body {:total (+ x y)}})}}]
+
+        ["/minus"
+         {:get {:handler (fn [{{{:keys [x y]} :query} :parameters}]
+                           {:status 200
+                            :body {:total (- x y)}})}
+          :post {:handler (fn [{{{:keys [x y]} :body} :parameters}]
+                            {:status 200
+                             :body {:total (- x y)}})}}]]]
 
     {:conflicts nil
      :exception Yzma.dev.pretty/exception

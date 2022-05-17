@@ -8,119 +8,211 @@
             pipe pipeline pipeline-async]]
    [clojure.java.io :as Wichita.java.io]
    [clojure.string :as Wichita.string]
-   [cheshire.core :as Cheshire-Cat.core]
-
-   [aleph.http :as Simba.http]
-   [manifold.deferred :as Nala.deferred]
-   [manifold.stream :as Nala.stream]
-   [byte-streams :as Rafiki]
-
    [Elsbeth.seed])
   (:import
-   (io.ipfs.api IPFS)
-   (java.util.stream Stream)
-   (java.util Base64)
-   (java.io BufferedReader)
-   (java.nio.charset StandardCharsets)))
+   (java.net InetAddress InetSocketAddress)
+   (io.netty.bootstrap Bootstrap)
+   (io.netty.channel ChannelPipeline)
+   (io.libp2p.core Connection Host PeerId)
+   (io.libp2p.core.dsl HostBuilder)
+   (io.libp2p.core.multiformats Multiaddr MultiaddrDns Protocol)
+   (io.libp2p.core Libp2pException Stream P2PChannelHandler)
+   (io.libp2p.core.multistream  ProtocolBinding StrictProtocolBinding)
+   (io.libp2p.protocol Ping PingController ProtocolHandler ProtobufProtocolHandler
+                       ProtocolMessageHandler ProtocolMessageHandler$DefaultImpls)
+   (io.libp2p.security.noise NoiseXXSecureChannel)
+   (io.libp2p.core.crypto PrivKey)
+
+   (io.libp2p.pubsub.gossip Gossip GossipRouter GossipParams GossipScoreParams GossipPeerScoreParams)
+   (io.libp2p.pubsub.gossip.builders GossipParamsBuilder GossipScoreParamsBuilder GossipPeerScoreParamsBuilder)
+   (io.libp2p.pubsub PubsubApiImpl)
+   (io.libp2p.etc.encode Base58)
+   (io.libp2p.etc.util P2PService$PeerHandler)
+   (io.libp2p.core.pubsub Topic MessageApi)
+   (io.libp2p.discovery MDnsDiscovery)
+
+   (java.util.function Function Consumer)
+   (io.netty.buffer ByteBuf ByteBufUtil Unpooled)
+   (java.util.concurrent CompletableFuture TimeUnit)))
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
 
-(defonce raw-stream-connection-pool (Simba.http/connection-pool {:connection-options {:raw-stream? true}}))
+(defmulti to-byte-array type)
 
-(defn encode-base64url-u
-  [^String string]
-  (-> (Base64/getUrlEncoder) (.withoutPadding)
-      (.encodeToString (.getBytes string StandardCharsets/UTF_8)) (->> (str "u"))))
+(defmethod to-byte-array ByteBuf ^bytes
+  [^ByteBuf bytebuf]
+  (let [byte-arr (byte-array (.readableBytes bytebuf))]
+    (->   (.slice bytebuf)
+          (.readBytes byte-arr))
+    byte-arr))
 
-(defn decode-base64url-u
-  [^String string]
-  (-> (Base64/getUrlDecoder)
-      (.decode (subs string 1))
-      (String. StandardCharsets/UTF_8)))
+(comment
 
-(defn pubsub-sub
-  [base-url topic message| cancel|]
-  (let [streamV (volatile! nil)]
-    (->
-     (Nala.deferred/chain
-      (Simba.http/post (str base-url "/api/v0/pubsub/sub")
-                       {:query-params {:arg topic}
-                        :pool raw-stream-connection-pool})
-      :body
-      (fn [stream]
-        (vreset! streamV stream)
-        stream)
-      #(Nala.stream/map Rafiki/to-string %)
-      (fn [stream]
-        (Nala.deferred/loop
-         []
-          (->
-           (Nala.stream/take! stream :none)
-           (Nala.deferred/chain
-            (fn [message-string]
-              (when-not (identical? message-string :none)
-                (let [message (Cheshire-Cat.core/parse-string message-string true)]
-                  #_(println :message message)
-                  (put! message| message))
-                (Nala.deferred/recur))))
-           (Nala.deferred/catch Exception (fn [ex] (println ex)))))))
-     (Nala.deferred/catch Exception (fn [ex] (println ex))))
+  (do
+    (def ping (Ping.))
+    (def host (->
+               (HostBuilder.)
+               (.protocol (into-array ProtocolBinding [ping]))
+               (.secureChannel
+                (into-array Function [(reify Function
+                                        (apply
+                                          [_ priv-key]
+                                          (NoiseXXSecureChannel. ^PrivKey priv-key)))]))
+               (.listen (into-array String ["/ip4/127.0.0.1/tcp/0"]))
+               (.build)))
+    (-> host (.start) (.get))
+    (println (format "host listening on \n %s" (.listenAddresses host))))
 
-    (go
-      (<! cancel|)
-      (Nala.stream/close! @streamV))
-    nil))
+  (do
+    (def address (Multiaddr/fromString "/ip4/104.131.131.82/tcp/4001/ipfs/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ"))
+    (def pinger (-> ping (.dial host address) (.getController) (.get 5 TimeUnit/SECONDS)))
+    (dotimes [i 5]
+      (let [latency (-> pinger (.ping) (.get 5 TimeUnit/SECONDS))]
+        (println latency))))
 
-(defn pubsub-pub
-  [base-url topic message]
-  (let []
+  (.stop host)
 
-    (->
-     (Nala.deferred/chain
-      (Simba.http/post (str base-url "/api/v0/pubsub/pub")
-                       {:query-params {:arg topic}
-                        :multipart [{:name "file" :content message}]})
-      :body
-      Rafiki/to-string
-      (fn [response-string] #_(println :repsponse reresponse-stringsponse)))
-     (Nala.deferred/catch
-      Exception
-      (fn [ex] (println ex))))
 
-    nil))
 
-(defn subscribe-process
-  [{:keys [^String ipfs-api-multiaddress
-           ^String ipfs-api-url
-           frequency
-           sub|
-           cancel|
-           id|]
-    :as opts}]
-  (let [ipfs (IPFS. ipfs-api-multiaddress)
-        base-url ipfs-api-url
-        topic (encode-base64url-u frequency)
-        id (-> ipfs (.id) (.get "ID"))
-        message| (chan (sliding-buffer 10))]
-    (put! id| {:peer-id id})
-    (pubsub-sub base-url  topic message| cancel|)
+  ;
+  )
 
-    (go
-      (loop []
-        (when-let [value (<! message|)]
-          (put! sub| (merge value
-                            {:message (-> (:data value) (decode-base64url-u) (read-string))}))
-          #_(println (merge value
-                            {:message (-> (:data value) (decode-base64url-u) (read-string))}))
-          #_(when-not (= (:from value) id)
 
-              #_(println (merge value
-                                {:message (-> (:data value) (decode-base64url-u) (read-string))})))
-          (recur))))
+(comment
 
-    #_(go
-        (loop []
-          (<! (timeout 2000))
-          (pubsub-pub base-url topic (str {:id id
-                                           :rand-int (rand-int 100)}))
-          (recur)))))
+  (do
+    (defn start-host
+      [gossip]
+      (let [host (->
+                  (HostBuilder.)
+                  (.protocol (into-array ProtocolBinding [(Ping.) gossip]))
+                  (.secureChannel
+                   (into-array Function [(reify Function
+                                           (apply
+                                             [_ priv-key]
+                                             (NoiseXXSecureChannel. ^PrivKey priv-key)))]))
+                  (.listen (into-array String ["/ip4/127.0.0.1/tcp/0"]))
+                  (.build))]
+        (-> host (.start) (.get))
+        (println (format "host listening on \n %s" (.listenAddresses host)))
+        host))
+
+    (defn connect
+      ([host multiaddr]
+       (connect host (.getFirst (.toPeerIdAndAddr multiaddr)) [(.getSecond (.toPeerIdAndAddr multiaddr))]))
+      ([host peer-id multiaddrs]
+       (->
+        host
+        (.getNetwork)
+        (.connect ^PeerId peer-id (into-array Multiaddr multiaddrs))
+        (.thenAccept (reify Consumer
+                       (accept [_ connection]
+                         (println ::connected connection)))))))
+
+    (defn ping
+      [host address]
+      (let [pinger (-> (Ping.) (.dial host address) (.getController) (.get 5 TimeUnit/SECONDS))]
+        (dotimes [i 5]
+          (let [latency (-> pinger (.ping) (.get 5 TimeUnit/SECONDS))]
+            (println latency)))))
+
+    (defn subsribe
+      [gossip key topic]
+      (.subscribe gossip
+                  (reify Consumer
+                    (accept [_ msg]
+                      (println ::gossip-recv-msg key (-> ^MessageApi msg
+                                                         (.getData)
+                                                         (to-byte-array)
+                                                         (String. "UTF-8")))))
+                  (into-array Topic [(Topic. topic)])))
+
+    (defn publish
+      [publisher topic string]
+      (.publish publisher (Unpooled/wrappedBuffer (.getBytes string "UTF-8")) (into-array Topic [(Topic. topic)])))
+
+    (defn linst-methods
+      [v]
+      (->> v
+           clojure.reflect/reflect
+           :members
+           (filter #(contains? (:flags %) :public))
+           (filter #(or (instance? clojure.reflect.Method %)
+                        (instance? clojure.reflect.Constructor %)))
+           (sort-by :name)
+           (map #(select-keys % [:name :return-type :parameter-types]))
+           clojure.pprint/print-table)))
+
+
+  (do
+    (def address1 (Multiaddr/fromString "/ip4/104.131.131.82/tcp/4001/ipfs/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ"))
+    (def address2 (Multiaddr/fromString "/dnsaddr/bootstrap.libp2p.io/ipfs/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN"))
+    (def address21 (Multiaddr/fromString "/ip4/147.75.109.213/tcp/4001/ipfs/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN"))
+    (def address3 (Multiaddr/fromString "/ip4/104.131.131.82/tcp/4001/ipfs/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ")))
+
+  (do
+    (def gossip1 (Gossip.))
+    (def host1 (start-host gossip1))
+
+    (def gossip2 (Gossip.))
+    (def host2 (start-host gossip2))
+
+    (def gossip3 (Gossip.))
+    (def host3 (start-host gossip3)))
+
+  (.getPeerId host1)
+  (.listenAddresses host1)
+
+  (do
+    (def publisher1 (.createPublisher gossip1 (.getPrivKey host1) 1234))
+    (def publisher2 (.createPublisher gossip2 (.getPrivKey host2) 1234))
+    (def publisher3 (.createPublisher gossip3 (.getPrivKey host3) 1234)))
+
+  (connect host1 (.getPeerId host2) (.listenAddresses host2))
+
+  (do
+    (connect host1 (.getPeerId host3) (.listenAddresses host3))
+    (connect host2 (.getPeerId host3) (.listenAddresses host3)))
+
+  (subsribe gossip1  :gossip1  "topic1")
+  (subsribe gossip2  :gossip2  "topic1")
+
+
+  (publish publisher1 "topic1" "from publisher1")
+  (publish publisher2 "topic1" "from publisher2")
+
+
+  (do
+    (.stop host1) (.stop host2) (.stop host3))
+
+  (connect host1 address3)
+  (connect host2 address3)
+
+  (.toString (.getSecond (.toPeerIdAndAddr address2)))
+
+  (MultiaddrDns/resolve address2)
+
+  (-> MultiaddrDns (clojure.reflect/reflect) (clojure.pprint/pprint))
+  (-> io.libp2p.core.multiformats.MultiaddrDns$Companion (clojure.reflect/reflect) (clojure.pprint/pprint))
+
+  (->>
+   (InetAddress/getAllByName "libp2p.io")
+   (filter (fn [inet-addr] (instance? java.net.Inet4Address inet-addr)))
+   (map (fn [inet-addr] (.getHostAddress ^InetAddress inet-addr))))
+
+  host -t TXT _dnsaddr.bootstrap.libp2p.io
+  nslookup sjc-2.bootstrap.libp2p.io
+  ; ewr-1.bootstrap.libp2p.io 147.75.77.187
+  ; ams-rust.bootstrap.libp2p.io 145.40.68.179
+  ; ams-2.bootstrap.libp2p.io 147.75.83.83
+  ; nrt-1.bootstrap.libp2p.io 147.75.94.115
+  ; sjc-2.bootstrap.libp2p.io 147.75.109.29
+  ; sjc-1.bootstrap.libp2p.io 147.75.109.213
+
+
+  (ping host1 address3)
+  (ping host1 address21)
+
+
+  ;
+  )

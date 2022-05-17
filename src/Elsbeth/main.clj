@@ -44,16 +44,4 @@
                    3345)]
       (Elsbeth.microwaved-beets/process
        {:port port
-        :host| host|}))
-
-    (let [port (or (System/getenv "ELSBETH_IPFS_PORT") "5001")
-          ipfs-api-url (format "http://127.0.0.1:%s" port)
-          id| (chan 1)]
-
-      (Elsbeth.corn/subscribe-process
-       {:sub| sub|
-        :cancel| (chan (sliding-buffer 1))
-        :frequency "raisins"
-        :ipfs-api-url ipfs-api-url
-        :ipfs-api-multiaddress (format "/ip4/127.0.0.1/tcp/%s" port)
-        :id| id|}))))
+        :host| host|}))))
